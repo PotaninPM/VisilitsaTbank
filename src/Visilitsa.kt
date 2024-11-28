@@ -4,7 +4,7 @@ class Visilitsa {
     fun run() {
         val dictionary = AllDictionary()
         val word = dictionary.randomWord()
-        val session = Session(word, 5)
+        val session = Session(word, word.length + 5)
 
         println("Прив! Угадай слово:")
 

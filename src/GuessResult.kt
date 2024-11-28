@@ -35,6 +35,6 @@ sealed interface GuessResult {
         override val attempt: Int,
         override val maxAttempts: Int
     ) : GuessResult {
-        override val message = "Не получилось, ошибка $attempt из $maxAttempts."
+        override val message = "Не получилось, попытка $attempt из $maxAttempts."
     }
 }

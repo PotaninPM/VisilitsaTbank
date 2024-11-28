@@ -3,7 +3,7 @@ class Session(
     private val maxAttempts: Int
 ) {
     private val userAnswer = CharArray(answer.length) { '*' }
-    private var attempts = 0
+    private var attempts = -1
 
     fun guess(guess: Char): GuessResult {
         if (attempts >= maxAttempts) {
