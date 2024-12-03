@@ -10,12 +10,17 @@ class Visilitsa {
 
         while (true) {
             println("> Слово: ${session.guess('*').state.concatToString()}")
-            print("> Угадай букву (или напиши 'exit' чтобы сдаться): ")
+            print("> Угадай букву ('exit' - сдаться, 'letters' - посмотреть буквы, которые ты уже использовал): ")
             val input = readln().trim().lowercase()
 
             if (input == "exit") {
                 printState(session.giveUp())
                 break
+            }
+
+            if (input == "letters") {
+                println(session.getUserLetters().message)
+                continue
             }
 
             if (input.length != 1 || input[0] !in 'а'..'я') {
@@ -27,13 +32,13 @@ class Visilitsa {
             val result = session.guess(guess)
             printState(result)
 
-            if (result is GuessResult.Win || result is GuessResult.Defeat) {
+            if (result is Result.Win || result is Result.Defeat) {
                 break
             }
         }
     }
 
-    private fun printState(result: GuessResult) {
+    private fun printState(result: Result) {
         println(result.message)
     }
 }

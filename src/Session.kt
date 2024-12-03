@@ -3,12 +3,20 @@ class Session(
     private val maxAttempts: Int
 ) {
     private val userAnswer = CharArray(answer.length) { '*' }
+    private val usedLetters: MutableSet<Char> = mutableSetOf()
     private var attempts = -1
 
-    fun guess(guess: Char): GuessResult {
-        if (attempts >= maxAttempts) {
-            return GuessResult.Defeat(answer, userAnswer, attempts, maxAttempts)
+    fun guess(guess: Char): Result {
+        if(usedLetters.contains(guess)) {
+            return Result.LetterWasUsed(userAnswer, attempts, maxAttempts, guess)
         }
+
+        if (attempts >= maxAttempts) {
+            return Result.Defeat(answer, userAnswer, attempts, maxAttempts)
+        }
+
+        if(guess != '*')
+            usedLetters.add(guess)
 
         var hit = false
         for (i in answer.indices) {
@@ -20,21 +28,25 @@ class Session(
 
         if (hit) {
             return if (userAnswer.concatToString() == answer) {
-                GuessResult.Win(answer, userAnswer, attempts, maxAttempts)
+                Result.Win(answer, userAnswer, attempts, maxAttempts)
             } else {
-                GuessResult.SuccessfulGuess(userAnswer, attempts, maxAttempts)
+                Result.SuccessfulGuess(userAnswer, attempts, maxAttempts)
             }
         } else {
             attempts++
             return if (attempts >= maxAttempts) {
-                GuessResult.Defeat(answer, userAnswer, attempts, maxAttempts)
+                Result.Defeat(answer, userAnswer, attempts, maxAttempts)
             } else {
-                GuessResult.FailedGuess(userAnswer, attempts, maxAttempts)
+                Result.FailedGuess(userAnswer, attempts, maxAttempts)
             }
         }
     }
 
-    fun giveUp(): GuessResult {
-        return GuessResult.Defeat(answer, userAnswer, attempts, maxAttempts)
+    fun getUserLetters(): Result {
+        return Result.LettersInUse(userAnswer, attempts, maxAttempts, usedLetters)
+    }
+
+    fun giveUp(): Result {
+        return Result.Defeat(answer, userAnswer, attempts, maxAttempts)
     }
 }

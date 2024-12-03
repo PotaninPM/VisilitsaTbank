@@ -1,4 +1,4 @@
-sealed interface GuessResult {
+sealed interface Result {
     val state: CharArray
     val attempt: Int
     val maxAttempts: Int
@@ -9,7 +9,7 @@ sealed interface GuessResult {
         override val state: CharArray,
         override val attempt: Int,
         override val maxAttempts: Int
-    ) : GuessResult {
+    ) : Result {
         override val message = "Ты проиграл! Слово было: $answer"
     }
 
@@ -18,7 +18,7 @@ sealed interface GuessResult {
         override val state: CharArray,
         override val attempt: Int,
         override val maxAttempts: Int
-    ) : GuessResult {
+    ) : Result {
         override val message = "Ты выиграл! Слово было: $answer"
     }
 
@@ -26,7 +26,7 @@ sealed interface GuessResult {
         override val state: CharArray,
         override val attempt: Int,
         override val maxAttempts: Int
-    ) : GuessResult {
+    ) : Result {
         override val message = "Есть пробитие!"
     }
 
@@ -34,7 +34,25 @@ sealed interface GuessResult {
         override val state: CharArray,
         override val attempt: Int,
         override val maxAttempts: Int
-    ) : GuessResult {
+    ) : Result {
         override val message = "Не получилось, попытка $attempt из $maxAttempts."
+    }
+
+    data class LetterWasUsed(
+        override val state: CharArray,
+        override val attempt: Int,
+        override val maxAttempts: Int,
+        val letter: Char
+    ) : Result {
+        override val message = "Буква '$letter' уже была использована."
+    }
+
+    data class LettersInUse(
+        override val state: CharArray,
+        override val attempt: Int,
+        override val maxAttempts: Int,
+        val letters: Set<Char>
+    ) : Result {
+        override val message = "Использованные буквы: ${letters.joinToString(", ")}"
     }
 }
